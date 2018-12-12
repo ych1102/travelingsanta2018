@@ -2,13 +2,18 @@ package auxilliarytools;
 
 import dataprocessing.MyFile;
 import entity.City;
+import entity.CityPair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by 01378498 on 2018/12/5.
  */
 public class Tools {
+
+    public static long startTime = System.currentTimeMillis();
+
     public static boolean isPrime(int n){
         if (n <= 3) {
             return n > 1;
@@ -59,6 +64,24 @@ public class Tools {
         }
         nearestCity.setDistanceToPrevCity(shortestDist);
         return nearestCity;
+    }
+
+    public static CityPair findNearestCityPair(List<City> firstTour, List<City> secondTour){
+        double shortestDist = 10000;
+        CityPair cp = new CityPair();
+        for (int i = 0; i < firstTour.size(); i++) {
+            City firstCity = firstTour.get(i);
+            City nearestToFirstCity = findNearestCity(firstCity,secondTour);
+            if(nearestToFirstCity.getDistanceToPrevCity()<shortestDist){
+                shortestDist = nearestToFirstCity.getDistanceToPrevCity();
+                cp.setC1(firstCity);
+                cp.setC2(nearestToFirstCity);
+                cp.setIndex1(i);
+                cp.setIndex2(nearestToFirstCity.getLoc());
+                //System.out.println("tempCP:"+cp);
+            }
+        }
+        return cp;
     }
 
     public static City findFarthestCity(City currentCity, List<City> cityList){
@@ -136,14 +159,40 @@ public class Tools {
         }
         return distance;
     }
+
+    public static double calculateSubLoopDistanceNoPrime(List<City> cityList){
+        double distance = 0;
+        for (int i = 0; i < cityList.size(); i++) {
+            City city = cityList.get(i%cityList.size());
+            City cityNext = cityList.get((i+1)%cityList.size());
+            distance += Tools.getEuclideanDistance(city,cityNext);
+        }
+        return distance;
+    }
+
+    /**
+     * 输出为kaggle要求的格式，city0为第一个，也为最后一个
+     * @param cityList
+     */
     public static void outputResultCSV(List<City> cityList){
+        City firstCity = cityList.get(0);
+        while(firstCity.getId()!=0){
+            cityList.remove(0);
+            cityList.add(cityList.size(),firstCity);
+            firstCity = cityList.get(0);
+        }
+
+        cityList.add(cityList.get(0));
+        double totalDist = calculateLoopDistance(cityList);
+
+
         StringBuffer sb = new StringBuffer();
         sb.append("Path\n");
         for(City c:cityList){
             sb.append(c.getId()+"\n");
         }
 
-        String fileName = "data/output1812630.csv";
+        String fileName = "data/output"+Math.round(totalDist)+".csv";
 
         try{
             MyFile.createFileDeleteIfExist(fileName);
@@ -152,7 +201,7 @@ public class Tools {
         catch (Exception e){
             e.printStackTrace();
         }
-
+        writeResultCoordinatesToFile(cityList,"data/finalCoordinate"+Math.round(totalDist));
     }
 
     public static void writeToFile(StringBuffer sb, String fileName){
@@ -168,6 +217,7 @@ public class Tools {
     }
 
     public static void writeResultCoordinatesToFile(List<City> resultList, String fileName){
+        if(resultList.size()==0)return;
         StringBuffer sb = new StringBuffer();
         for(City city:resultList){
             sb.append(city.getX()+",");
@@ -178,6 +228,11 @@ public class Tools {
             sb.append(city.getY()+",");
         }
         sb.deleteCharAt(sb.length() - 1);
+        sb.append("\n");
+        for(City city:resultList){
+            sb.append(city.getId()+",");
+        }
+        sb.deleteCharAt(sb.length() - 1);
         try{
             MyFile.createFileDeleteIfExist(fileName);
             MyFile.writeTxtFile(sb.toString());
@@ -186,5 +241,53 @@ public class Tools {
             e.printStackTrace();
         }
 
+    }
+
+    public static double[] zoneBound(List<City> cityList){
+        double leftBound = 10000;
+        double rightBound = 0;
+        double lowerBound = 10000;
+        double upBound = 0;
+        for(City c:cityList){
+            if(c.getX()<leftBound)leftBound = c.getX();
+            if(c.getX()>rightBound)rightBound = c.getX();
+            if(c.getY()<lowerBound)lowerBound = c.getY();
+            if(c.getY()>upBound)upBound = c.getY();
+        }
+        return new double[]{leftBound,rightBound,lowerBound,upBound};
+    }
+
+    public static boolean intersect(City a, City b, City c, City d){
+        if(!lineIntersectSide(a, b, c, d))
+            return false;
+        if(!lineIntersectSide(c, d, a, b))
+            return false;
+
+        return true;
+    }
+
+    public static boolean lineIntersectSide(City a, City b, City c, City d) {
+        // A(x1, y1), B(x2, y2)的直线方程为：
+        // f(x, y) =  (y - y1) * (x1 - x2) - (x - x1) * (y1 - y2) = 0
+
+        double fC = (c.getY() - a.getY()) * (a.getX() - b.getX()) - (c.getX() - a.getX()) * (a.getY() - b.getY());
+        double fD = (d.getY() - a.getY()) * (a.getX() - b.getX()) - (d.getX() - a.getX()) * (a.getY() - b.getY());
+
+        if (fC * fD > 0)
+            return false;
+
+        return true;
+    }
+
+    public static boolean fallInFrame(City city, double leftBd, double rightBd, double lwBd, double uppBd){
+        return (city.getX()>=leftBd&&city.getX()<=rightBd&&city.getY()>=lwBd&&city.getY()<=uppBd);
+    }
+
+    public static void reverseSubSection(List<City> cityList, int startPos, int endPos){
+        while(startPos<endPos){
+            City moveCity = cityList.get(endPos);
+            cityList.remove(endPos);
+            cityList.add(startPos++,moveCity);
+        }
     }
 }

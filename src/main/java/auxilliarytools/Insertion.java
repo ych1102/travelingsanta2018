@@ -9,7 +9,13 @@ import java.util.List;
  */
 public class Insertion {
 
-    public static void insertIntoListByLowestCost(List<City> toInsertList, City toBeInserted){
+    public static void insertListIntoTour(List<City> cityListToInsert, List<City> tour){
+        for(City c:cityListToInsert){
+            insertIntoListByLowestCostEuclidean(tour,c);
+        }
+    }
+
+    public static void insertIntoListByLowestCostManhattan(List<City> toInsertList, City toBeInserted){
         double minIncrementCost = Tools.getManhattanDistance(toInsertList.get(0),toBeInserted) +
                 Tools.getManhattanDistance(toInsertList.get(toInsertList.size()-1),toBeInserted) -
                 Tools.getManhattanDistance(toInsertList.get(0),toInsertList.get(toInsertList.size()-1));
@@ -28,6 +34,24 @@ public class Insertion {
         toInsertList.add(insertPosition,toBeInserted);
     }
 
+    public static void insertIntoListByLowestCostEuclidean(List<City> toInsertList, City toBeInserted){
+        double minIncrementCost = Tools.getEuclideanDistance(toInsertList.get(0),toBeInserted) +
+                Tools.getEuclideanDistance(toInsertList.get(toInsertList.size()-1),toBeInserted) -
+                Tools.getEuclideanDistance(toInsertList.get(0),toInsertList.get(toInsertList.size()-1));
+        int insertPosition = toInsertList.size();
+        for (int i = 0; i < toInsertList.size()-1; i++) {
+            City cityI = toInsertList.get(i);
+            City cityJ = toInsertList.get(i+1);
+            double incrementCost = Tools.getEuclideanDistance(cityI,toBeInserted) +
+                    Tools.getEuclideanDistance(cityJ,toBeInserted) -
+                    Tools.getEuclideanDistance(cityI,cityJ);
+            if(incrementCost<minIncrementCost){
+                minIncrementCost = incrementCost;
+                insertPosition = i+1;
+            }
+        }
+        toInsertList.add(insertPosition,toBeInserted);
+    }
 
     public static void insertIntoListByLowestCostSimpleVersion(List<City> toInsertList, City toBeInserted, int locOfNearestCityInList){
         double minIncrementCost = Tools.getManhattanDistance(toInsertList.get(0),toBeInserted) +

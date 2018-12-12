@@ -1,8 +1,14 @@
 package run;
 
-import initialsolution.FarthestInsertion;
+import a_improvement.DestructionAndRebuild;
+import a_improvement.Improvement;
+import a_improvement.RemoveLongArcAndRebuild;
+import a_initialsolution.FarthestInsertion;
+import a_initialsolution.Zoning;
+import auxilliarytools.Tools;
 import dataprocessing.ReadData;
 import entity.City;
+import a_initialsolution.GreedyAlgorithm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +20,22 @@ public class MainController {
     public static void main(final String[] args) {
         List<City> resultList = new ArrayList<>();
         ReadData rd = new ReadData();
-        rd.run();
+        rd.run("data/cities.csv","data/output1812630.csv");
 
-        //GreedyAlgorithm nal = new GreedyAlgorithm(rd.getCityList());
+        //SortCities.sortByReverseOrder(rd.getCityList());
 
-        //nal.greedyRun(resultList);
-        /*nal.nearestInsertionSimple(resultList);*/
-        FarthestInsertion far = new FarthestInsertion(rd.getCityList());
-        far.farthestInsertion(resultList,100);
-        //Tools.writeResultCoordinatesToFile(resultList,"data/coordinates");
-        //System.out.println(Tools.calculateLoopDistance(rd.getReadCityList()));
+        /*GreedyAlgorithm nal = new GreedyAlgorithm(rd.getCityList());
+        nal.greedyRun(resultList);*/
+        /*DestructionAndRebuild des = new DestructionAndRebuild();
+        des.minorDestroyAndRebuild(rd.getReadCityList(),50,10);*/
+        /*RemoveLongArcAndRebuild rar = new RemoveLongArcAndRebuild();
+        rar.removeLongArcAndRebuild(rd.getReadCityList(),2000);*/
+
+        Zoning zoning = new Zoning(rd.getCityList());
+        List<List<City>> zoneList = zoning.zonePartition(10,7);
+        List<List<City>> outputZoneList = zoning.runOneByOne(zoneList,new GreedyAlgorithm());
+        zoning.connectZones(outputZoneList,resultList);
+        Tools.outputResultCSV(resultList);
+
     }
 }

@@ -3,6 +3,8 @@ package entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -18,7 +20,13 @@ public class City {
     private double distanceToPrevCity; //not consider 10%
     private double insertionCost;
     private int loc;
+
+    private List<CityPair> nearestCityPairList = new ArrayList<>();
+    private List<CityPair> farestCityPairList = new ArrayList();
     private City nearestCity;
+    private double nearestDist;
+    private City farthestCity;
+    private double farthestDist;
 
     public String toString(){
         return this.getId()+"("+this.getX()+","+this.getY()+")"+(this.isPrimeCity?"primeCity":"");

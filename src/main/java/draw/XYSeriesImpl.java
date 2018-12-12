@@ -1,6 +1,4 @@
 package draw;
-import initialsolution.GreedyAlgorithm;
-import dataprocessing.ReadData;
 import entity.City;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -43,12 +41,8 @@ public class XYSeriesImpl extends ApplicationFrame{
     }
     public static void main(final String[] args) {
 
-        ReadData rd = new ReadData();
-        rd.run();
-        GreedyAlgorithm nal = new GreedyAlgorithm(rd.getCityList());
-        List<City> resultList = new ArrayList<>();
-        nal.nearestInsertion(resultList);
-        final XYSeriesImpl demo = new XYSeriesImpl("XY Series Demo",resultList);
+
+        final XYSeriesImpl demo = new XYSeriesImpl("XY Series Demo",new ArrayList<>());
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
