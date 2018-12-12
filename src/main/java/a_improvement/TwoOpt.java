@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by 01378498 on 2018/12/11.
  */
-public class TwoOpt implements Improvement {
+public class TwoOpt implements Improvement{
     public void improveRun(List<City> cityList, int maxCount){
         twoOpt(cityList,maxCount);
     }
@@ -40,9 +40,6 @@ public class TwoOpt implements Improvement {
             }
             count++;
         }
-
-
-
     }
 
 

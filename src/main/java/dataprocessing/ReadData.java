@@ -21,9 +21,18 @@ public class ReadData {
     private List<City> readCityList;
 
     private Map<String, Double> distMap;  // <id_id1,dist>
+    private double[][] distArray;
+
     public void run(String rawData, String preGeneratedTour){
         readCsv(rawData);
         readCityFromCsv(preGeneratedTour);
+
+        for(int i=0;i<cityList.size();i+=10000){
+            calculateFarthestAndNearestCity(i,Math.min(i+10000,cityList.size()));
+        }
+
+        //calculateDistanceArray();
+        System.exit(1);
         //calculateDistanceMap();
     }
 
@@ -86,6 +95,23 @@ public class ReadData {
         }
     }
 
+    public void calculateDistanceArray(){
+        distArray = new double[cityList.size()][cityList.size()];
+
+        for (int i = 0; i < cityList.size(); i++) {
+            City city = cityList.get(i);
+
+            distArray[city.getId()][city.getId()] = 0;
+
+            for (int j = i+1; j < cityList.size(); j++) {
+                City city1 = cityList.get(j);
+                double dist = Tools.getManhattanDistance(city,city1);
+                distArray[city.getId()][city1.getId()] = dist;
+                distArray[city1.getId()][city.getId()] = dist;
+            }
+        }
+    }
+
     public void calculateFarthestAndNearestCity(int startIndex, int endIndex){
         String fileName1 = "data/farestcities"+startIndex+"_"+endIndex+".txt";
         String fileName2 = "data/nearestcities"+startIndex+"_"+endIndex+".txt";
@@ -95,21 +121,21 @@ public class ReadData {
             try {
                 String line;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName1)));
-                for(int i=startIndex;i< endIndex;i++){
-                    City cityI = cityList.get(i);
-                    line = reader.readLine();
-                    String[] columns = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, ",");
-
-                    for(int j=0;j<columns.length;j+=2){
-                        if(columns[j].equals("")) break;
-
-                        CityPair cp = new CityPair();
-                        cp.setCurrentCity(cityI);
-                        cp.setTargetCity(cityList.get(Integer.parseInt(columns[j])));
-                        cp.setDist(Double.parseDouble(columns[j+1]));
-                        cityI.getFarestCityPairList().add(cp);
-                    }
-                }
+//                for(int i=startIndex;i< endIndex;i++){
+//                    City cityI = cityList.get(i);
+//                    line = reader.readLine();
+//                    String[] columns = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, ",");
+//
+//                    for(int j=0;j<columns.length;j+=2){
+//                        if(columns[j].equals("")) break;
+//
+//                        CityPair cp = new CityPair();
+//                        cp.setCurrentCity(cityI);
+//                        cp.setTargetCity(cityList.get(Integer.parseInt(columns[j])));
+//                        cp.setDist(Double.parseDouble(columns[j+1]));
+//                        cityI.getFarestCityPairList().add(cp);
+//                    }
+//                }
 
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName2)));
                 for(int i=startIndex;i< endIndex;i++){

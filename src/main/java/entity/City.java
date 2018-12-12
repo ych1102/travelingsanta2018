@@ -28,6 +28,10 @@ public class City {
     private City farthestCity;
     private double farthestDist;
 
+    private City proceedingCity;
+    private City succeedingCity;
+    private int currentIndex;
+
     public String toString(){
         return this.getId()+"("+this.getX()+","+this.getY()+")"+(this.isPrimeCity?"primeCity":"");
     }
