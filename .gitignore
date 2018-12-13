@@ -24,6 +24,7 @@
 *.mps
 *.lp
 *.bat
+*.iml
 [Bb]in 
 obj/
 data/

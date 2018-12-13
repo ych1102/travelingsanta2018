@@ -286,6 +286,7 @@ public class Tools {
     public static void reverseSubSection(List<City> cityList, int startPos, int endPos){
         while(startPos<endPos){
             City moveCity = cityList.get(endPos);
+            moveCity.setLoc(startPos);
             cityList.remove(endPos);
             cityList.add(startPos++,moveCity);
         }

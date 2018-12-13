@@ -19,16 +19,15 @@ public class TestZoningAndTwoOpt {
     public static void main(final String[] args) {
         List<City> resultList = new ArrayList<>();
         ReadData rd = new ReadData();
-        rd.run("data/cities.csv","data/output1812630.csv");
+        rd.run("data/cities.csv","data/output1616638.csv");
 
-        Zoning zoning = new Zoning(rd.getCityList());
-        List<List<City>> zoneList = zoning.zonePartition(10,10);
-        List<List<City>> outputZoneList = zoning.runOneByOne(zoneList,new GreedyAlgorithm());
+        //Zoning zoning = new Zoning(rd.getCityList());
+        //List<List<City>> zoneList = zoning.zonePartition(10,10);
+        //List<List<City>> outputZoneList = zoning.runOneByOne(zoneList,new GreedyAlgorithm());
+        //zoning.connectZones(outputZoneList,resultList);
+        resultList = rd.getReadCityList();
         Improvement improveMethod = new TwoOpt();
-        //improveMethod.improveRun(outputZoneList.get(98),9);
-        improveMethod.improveRunBatch(outputZoneList,9000);
-        zoning.connectZones(outputZoneList,resultList);
-        //improveMethod.improveRun(resultList,5);
+        improveMethod.improveRun(resultList,5);
         Tools.outputResultCSV(resultList);
 
     }
