@@ -32,7 +32,6 @@ public class ReadData {
         }
 
         //calculateDistanceArray();
-        System.exit(1);
         //calculateDistanceMap();
     }
 
