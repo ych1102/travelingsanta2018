@@ -291,4 +291,13 @@ public class Tools {
             cityList.add(startPos++,moveCity);
         }
     }
+
+    public static void startFrom0(List<City> cityList){
+        City firstCity = cityList.get(0);
+        while(firstCity.getId()!=0){
+            cityList.remove(0);
+            cityList.add(cityList.size(),firstCity);
+            firstCity = cityList.get(0);
+        }
+    }
 }
