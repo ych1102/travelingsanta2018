@@ -3,6 +3,7 @@ package run;
 import a_improvement.DetectIntersectionAndResolve;
 import a_improvement.Improvement;
 import a_improvement.TwoOpt;
+import a_improvement.TwoOptConsiderPrime;
 import a_initialsolution.GreedyAlgorithm;
 import a_initialsolution.Zoning;
 import auxilliarytools.Tools;
@@ -26,7 +27,7 @@ public class TestZoningAndTwoOpt {
         //List<List<City>> outputZoneList = zoning.runOneByOne(zoneList,new GreedyAlgorithm());
         //zoning.connectZones(outputZoneList,resultList);
         resultList = rd.getReadCityList();
-        Improvement improveMethod = new TwoOpt();
+        Improvement improveMethod = new TwoOptConsiderPrime();
         improveMethod.improveRun(resultList,5);
         Tools.outputResultCSV(resultList);
 
