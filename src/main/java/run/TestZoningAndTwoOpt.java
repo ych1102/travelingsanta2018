@@ -20,7 +20,7 @@ public class TestZoningAndTwoOpt {
     public static void main(final String[] args) {
         List<City> resultList = new ArrayList<>();
         ReadData rd = new ReadData();
-        rd.run("data/cities.csv","data/output1616638.csv");
+        rd.run("data/cities.csv","data/output1585856.csv");
 
         //Zoning zoning = new Zoning(rd.getCityList());
         //List<List<City>> zoneList = zoning.zonePartition(10,10);
