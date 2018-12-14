@@ -20,7 +20,7 @@ public class TestZoningAndTwoOpt {
     public static void main(final String[] args) {
         List<City> resultList = new ArrayList<>();
         ReadData rd = new ReadData();
-        rd.run("data/cities.csv","data/output1585856.csv");
+        rd.run("data/cities.csv","data/output1583619.csv");
 
         //Zoning zoning = new Zoning(rd.getCityList());
         //List<List<City>> zoneList = zoning.zonePartition(10,10);
@@ -28,6 +28,7 @@ public class TestZoningAndTwoOpt {
         //zoning.connectZones(outputZoneList,resultList);
         resultList = rd.getReadCityList();
         Improvement improveMethod = new TwoOptConsiderPrime();
+        improveMethod.improveRun(resultList,5);
         improveMethod.improveRun(resultList,5);
         Tools.outputResultCSV(resultList);
 

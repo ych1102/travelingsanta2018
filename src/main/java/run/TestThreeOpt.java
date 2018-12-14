@@ -17,11 +17,14 @@ public class TestThreeOpt {
     public static void main(final String[] args) {
         List<City> resultList = new ArrayList<>();
         ReadData rd = new ReadData();
-        rd.run("data/cities.csv","data/output1585856.csv");
+        rd.run("data/cities.csv","data/output1569417.csv");
 
         resultList = rd.getReadCityList();
         Improvement improveMethod = new ThreeOpt();
-        improveMethod.improveRun(resultList,5);
+        for (int i = 0; i < 10; i++) {
+            improveMethod.improveRun(resultList,5);
+        }
+
         Tools.outputResultCSV(resultList);
 
     }

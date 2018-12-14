@@ -34,16 +34,17 @@ public class TwoOptConsiderPrime implements Improvement {
             List<CityPair> cityPairList = currentCity.getNearestCityPairList();
             for(CityPair cp:cityPairList){
                 if(cp.getTargetCity().getLoc()<i+2||cp.getTargetCity().getLoc()==cityList.size()-1)continue;
-                if(hasImprovement(cityList,i,cp.getTargetCity().getLoc())){
-                    System.out.println("improve: CurrentPos "+i+" neighborPos "+cp.getTargetCity().getLoc());
+                double diff = hasImprovement(cityList,i,cp.getTargetCity().getLoc());
+                if(diff<0){
+                    System.out.println("improve: CurrentPos "+i+" neighborPos "+cp.getTargetCity().getLoc()+" improveValue:"+diff);
                     reverseSubList(cityList,i+1,cp.getTargetCity().getLoc());
                 }
             }
-            if(i%20000==10)Tools.writeResultCoordinatesToFile(cityList,"mid_coordinate"+i);
+            //if(i%20000==10)Tools.writeResultCoordinatesToFile(cityList,"mid_coordinate"+i);
         }
     }
 
-    public boolean hasImprovement(List<City> cityList, int pos1, int pos2){
+    public double hasImprovement(List<City> cityList, int pos1, int pos2){
         int pos1suc = (pos1+1)%cityList.size();
         int pos2suc = (pos2+1)%cityList.size();
 
@@ -69,7 +70,7 @@ public class TwoOptConsiderPrime implements Improvement {
                 - Tools.getEuclideanDistance(cityList.get(pos1),cityList.get(pos1suc))
                 - Tools.getEuclideanDistance(cityList.get(pos2),cityList.get(pos2suc))
                 + additionalCostNew - additionalCostOld;
-        return diff<0;
+        return diff;
     }
 
     public void reverseSubList(List<City> cityList, int pos1suc, int pos2){

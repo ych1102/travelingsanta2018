@@ -4,9 +4,7 @@ import auxilliarytools.Tools;
 import entity.City;
 import entity.CityPair;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by 01378498 on 2018/12/11.
@@ -25,9 +23,10 @@ public class ThreeOpt implements Improvement {
         for (int i = 0; i < cityList.size(); i++) {
             cityList.get(i).setLoc(i);
         }
+
         for (int i = 0; i < cityList.size()-2; i++) {
             City currentCity = cityList.get(i);
-            System.out.println("start to detect city:"+currentCity.getId()+" loc:"+currentCity.getLoc());
+
             List<CityPair> cityPairList = currentCity.getNearestCityPairList();
             for(CityPair cp1:cityPairList){
                 if(cp1.getTargetCity().getLoc()<currentCity.getLoc()+2||cp1.getTargetCity().getLoc()==cityList.size()-1)continue;
@@ -43,33 +42,30 @@ public class ThreeOpt implements Improvement {
                     int pos2suc = (pos2+1)%cityList.size();
                     int pos3suc = (pos3+1)%cityList.size();
 
-                    if(hasImprovement4(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)) {
-                       System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way4");
-                        System.exit(1);
 
+                    if(hasImprovement1(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
+                        //System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way1");
+                        //System.exit(1);
+                        reverseSubList1(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
+                        //return;
+                    }else if(hasImprovement2(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
+                        //System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way2");
+                        //System.exit(1);
+                        reverseSubList2(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
+                        //return;
+                    }if(hasImprovement3(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
+                        //System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way3");
+                        //System.exit(1);
+                        reverseSubList3(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
+                        //return;
+                    }if(hasImprovement4(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
+                        //System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way4");
+                        //System.exit(1);
+                        reverseSubList4(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
+                        //return;
                     }
-
-
-//                    if(hasImprovement1(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
-//                        System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way1");
-//                        System.exit(1);
-//                        reverseSubList1(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
-//                    }else if(hasImprovement2(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
-//                        System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way2");
-//                        System.exit(1);
-//                        reverseSubList2(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
-//                    }if(hasImprovement3(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
-//                        System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way3");
-//                        System.exit(1);
-//                        reverseSubList3(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
-//                    }if(hasImprovement4(cityList,pos1, pos2, pos3, pos1suc, pos2suc, pos3suc)){
-//                        System.out.println(pos1+" "+pos1suc+" "+pos2+" "+pos2suc+" "+pos3+" "+pos3suc+" way4");
-//                        System.exit(1);
-//                        reverseSubList4(cityList, pos1, pos2, pos3, pos1suc, pos2suc, pos3suc);
-//                    }
                 }
             }
-            if(i%20000==10)Tools.writeResultCoordinatesToFile(cityList,"mid_coordinate"+i);
         }
     }
 
@@ -180,6 +176,7 @@ public class ThreeOpt implements Improvement {
                 Tools.getEuclideanDistance(cityList.get(pos1),cityList.get(pos1suc)) -
                 Tools.getEuclideanDistance(cityList.get(pos2),cityList.get(pos2suc)) -
                 Tools.getEuclideanDistance(cityList.get(pos3),cityList.get(pos3suc));
+
         return diff<0;
 
     }
@@ -203,5 +200,6 @@ public class ThreeOpt implements Improvement {
 
         cityList.clear();
         cityList.addAll(newCityList);
+
     }
 }
